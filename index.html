@@ -342,8 +342,9 @@
   <section id="productos">
     <h2>Nuestras artesanías</h2>
     <p>Descubre la riqueza cultural de las tejedoras Wayuu. Mochilas, manillas, chinchorros y más.</p>
+    <p>¡regunta por lo que no veas!</p>
     <div class="artesanias" id="artesanias-lista">
-      <!-- Renderizado por JS -->
+        <!-- Renderizado por JS -->
     </div>
     <div id="categoria-detalle" style="display:none;"></div>
   </section>
@@ -421,6 +422,7 @@
         foto: "artesana1.jpg",
         bio: "Tejedora con más de 20 años de experiencia, reconocida por sus diseños tradicionales y liderazgo en la comunidad Wayuu."
       },
+      
       {
         nombre: "Elianna Ipuana",
         rol: "Maestra en mochilas",
@@ -445,6 +447,10 @@
         { nombre: "Manilla Wayuu azul", precio: 25000, img: "https://iiwawayuu.com/wp-content/uploads/2025/06/products2FBXM011-3.webp", desc: "Manilla con símbolos Wayuu color azul.", artesana: 1 },
         { nombre: "Manilla Wayuu multicolor", precio: 29000, img: "https://iiwawayuu.com/wp-content/uploads/2025/06/products2FBXM011-1.webp", desc: "Manilla tejida, colores vibrantes.", artesana: 1 }
       ],
+      monederos: [
+        { nombre: "Monedero pequeño", precio: 25000, img: "https://iiwawayuu.com/wp-content/uploads/2025/06/products2FBXM011-3.webp", desc: "Manilla con símbolos Wayuu color azul.", artesana: 1 },
+        { nombre: "Monedero Multicolor", precio: 29000, img: "https://iiwawayuu.com/wp-content/uploads/2025/06/products2FBXM011-1.webp", desc: "Manilla tejida, colores vibrantes.", artesana: 1 }
+      ],
       chinchorros: [
         { nombre: "Chinchorro Wayuu estándar", precio: 300000, img: "https://iiwawayuu.com/wp-content/uploads/2025/06/products2FBXM011-2.webp", desc: "Chinchorro tejido, cómodo y resistente.", artesana: 2 },
         { nombre: "Chinchorro Wayuu premium", precio: 350000, img: "https://iiwawayuu.com/wp-content/uploads/2025/06/products2FBXM011-3.webp", desc: "Mayor tamaño, diseño exclusivo.", artesana: 2 }
@@ -463,6 +469,12 @@
         id: "manillas",
         nombre: "Manillas",
         descripcion: "Diseños únicos que representan símbolos de la comunidad.",
+        img: "https://iiwawayuu.com/wp-content/uploads/2025/06/products2FBXM011-2.webp"
+      },
+         {
+        id: "monederos",
+        nombre: "Monederos",
+        descripcion: "Diseños unicos para mantener tus riquezas ancestrales.",
         img: "https://iiwawayuu.com/wp-content/uploads/2025/06/products2FBXM011-2.webp"
       },
       {
@@ -540,24 +552,30 @@
     }
 
     // Mostrar productos de una categoría (Modificado para mostrar el precio)
-    function mostrarCategoria(cat) {
-      const detalle = document.getElementById("categoria-detalle");
-      let html = `<button class="back-btn" onclick="volverACategorias()">← Volver</button>
-        <div class="artesanias">`;
-      categorias[cat].forEach((prod, i) => {
-        html += `<div class="producto" onclick="mostrarProductoModalCat('${cat}',${i})">
-          <img src="${prod.img}" alt="${prod.nombre}">
-          <h3>${prod.nombre}</h3>
-          <p>${prod.desc}</p>
-          <span class="precio" style="color:#e94e1b;font-weight:bold;font-size:1.08em;margin-top:4px;">$${prod.precio.toLocaleString()}</span>
-        </div>`;
-      });
-      html += `</div>`;
-      detalle.innerHTML = html;
-      document.getElementById("artesanias-lista").style.display = "none";
-      detalle.style.display = "block";
-    }
-
+  // ...existing code...
+function mostrarCategoria(cat) {
+  const detalle = document.getElementById("categoria-detalle");
+  let html = `<button class="back-btn" onclick="volverACategorias()">← Volver</button>
+    <div class="artesanias">`;
+  categorias[cat].forEach((prod, i) => {
+    const inputId = `cantidad-${cat}-${i}`;
+    html += `<div class="producto" onclick="mostrarProductoModalCat('${cat}',${i})">
+      <img src="${prod.img}" alt="${prod.nombre}">
+      <h3>${prod.nombre}</h3>
+      <p>${prod.desc}</p>
+      <span class="precio" style="color:#e94e1b;font-weight:bold;font-size:1.08em;margin-top:4px;">$${prod.precio.toLocaleString()}</span>
+      <div style="display:flex;align-items:center;gap:8px;margin-top:10px;">
+        <input type="number" id="${inputId}" min="1" value="1" style="width:50px;padding:4px 2px;border-radius:4px;border:1px solid #ccc;" onclick="event.stopPropagation();">
+        <button class="agregar" onclick="agregarAlCarritoCantidad('${prod.nombre}',${prod.precio},'${prod.img}','${inputId}');event.stopPropagation();">Agregar al carrito</button>
+      </div>
+    </div>`;
+  });
+  html += `</div>`;
+  detalle.innerHTML = html;
+  document.getElementById("artesanias-lista").style.display = "none";
+  detalle.style.display = "block";
+}
+// ...existing code...
     function volverACategorias() {
       renderCategoriasPrincipales();
     }
@@ -605,6 +623,18 @@
       }
       actualizarCarritoBadge();
     }
+    // ...existing code...
+function agregarAlCarritoCantidad(nombre, precio, img, inputId) {
+  const cantidad = parseInt(document.getElementById(inputId).value) || 1;
+  const idx = carrito.findIndex(p => p.nombre === nombre);
+  if(idx >= 0) {
+    carrito[idx].cantidad += cantidad;
+  } else {
+    carrito.push({nombre, precio, cantidad, img});
+  }
+  actualizarCarritoBadge();
+}
+// ...existing code...
     function mostrarCarrito() {
       const modal = document.getElementById("carrito-modal-bg");
       const lista = document.getElementById("carrito-lista");
