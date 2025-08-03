@@ -658,6 +658,12 @@ function agregarAlCarritoCantidad(nombre, precio, img, inputId) {
       });
       document.getElementById("carrito-resumen").innerHTML = `Total: $${total.toLocaleString()}`;
       modal.style.display = "flex";
+      document.getElementById("carrito-resumen").innerHTML += `
+      <div style="margin-top:10px;">
+      <button onclick="pagarConNequi()" style="background:#800080;color:white;padding:8px 16px;border:none;border-radius:8px;margin-right:8px;">Pagar con Nequi</button>
+      <button onclick="pagarConPSE()" style="background:#005AA7;color:white;padding:8px 16px;border:none;border-radius:8px;">Pagar con PSE</button>
+      </div>
+     `;
     }
     function quitarDelCarrito(idx) {
       carrito.splice(idx, 1);
@@ -684,6 +690,21 @@ function agregarAlCarritoCantidad(nombre, precio, img, inputId) {
         cerrarArtesanaModal();
       }
     }
+    function pagarConNequi() {
+      const total = carrito.reduce((sum, item) => sum + item.precio * item.cantidad, 0);
+      alert(`Redirigiendo al pago con Nequi. Total: $${total.toLocaleString()}`);
+
+  // Simulación de redirección o integración real de pasarela de pago
+   window.open('https://www.nequi.com.co/', '_blank');
+   }
+
+   function pagarConPSE() {
+     const total = carrito.reduce((sum, item) => sum + item.precio * item.cantidad, 0);
+     alert(`Redirigiendo al pago con PSE. Total: $${total.toLocaleString()}`);
+
+  // Simulación de redirección o integración real de pasarela de pago
+  window.open('https://www.pse.com.co/persona', '_blank');
+  }
     // Inicializar categorías principales y artesanas al cargar
     renderCategoriasPrincipales();
     renderArtesanas();
